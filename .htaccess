@@ -1,0 +1,26 @@
+# Documentacao: https://httpd.apache.org/docs/2.4/rewrite/flags.html
+# Ativa o modulo Rewrite, que faz a reescrita de URL.
+RewriteEngine On
+
+# RewriteCond: Define uma condicao para uma regra.
+# REQUEST_FILENAME e o caminho completo do diretorio que atende ao request original, tomando por base o filesystem da maquina, e nao relativo a hospedagem
+# RewriteCond %{REQUEST_FILENAME} !-d Informa que sera criado uma condicao a ser aplicado ao nome do diretorio requisitado. A exclamacao e o sinal de negacao e -d pede para verificar a existencia de um diretorio fisico. Ex: condicao = SE ARQUIVO_REQUISITADO NAO EXISTE COMO DIRETORIO FISICAMENTE
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# RewriteCond %{REQUEST_FILENAME} !-f Informa que sera criado uma condicao a ser aplicado ao nome do arquivo requisitado. A exclamacao e o sinal de negacao e -f pede para verificar a existencia de um arquivo fisico. Ex: CONDICAO = SE ARQUIVO_REQUISITADO NAO EXISTE FISICAMENTE
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# RewriteCond %{REQUEST_FILENAME} !-1 Informa que sera criado uma codicao a ser aplciado ao link simbolico requisitado. A exclamacao e o sinal de negacao e -1 pede para verificar a existencia de um link simbolico
+RewriteCond %{REQUEST_FILENAME} !-1
+
+# RewriteRule: Faz a reescrita do URL
+# Circunflexo indica inicio e cifrao indica o fim
+# (.+) Pede todo o conteudo da url
+# index.php?params=$1 Indica para substituir a requisicao, redirecionando o fluxo para index.php e colocando-a inteiramente como parametro.
+# Exemplo: index.php?url=blog/index
+# QSA significa que se houver uma string de consulta passada com a URL original, ela sera anexada a reescrita
+# Exemplo: "usuarios?situcao=3" sera reescrita como index.php?url=usuarios&p=situacao
+# O sinalizador [L] faz mod_rewrite com que o processamento do conjunto de regras seja interrompido
+RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
+
+# Deseja capturar apenas URLs que contenham pelo menos um caractere, use "+" (^(.+)$). se voce deseja capturar todas as URLs, incluindo as que estejam vazias, use ""(^(.*)$).
